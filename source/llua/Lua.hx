@@ -161,9 +161,9 @@ class Lua_helper
 		for (i in 0...nargs)
 			args[i] = Convert.fromLua(l, i + 1);
 
-		Lua.pop(l, nargs);
+		hxluajit.Lua.pop(l, nargs);
 
-		final name:String = Lua.tostring(l, hxluajit.Lua.upvalueindex(1));
+		final name:String = hxluajit.Lua.tostring(l, hxluajit.Lua.upvalueindex(1));
 
 		if (callbacks.exists(name))
 		{
