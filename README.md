@@ -1,38 +1,15 @@
-# hxluajit
+# linc_luajit-legacy
 
-![](https://img.shields.io/github/repo-size/MAJigsaw77/hxluajit) ![](https://badgen.net/github/open-issues/MAJigsaw77/hxluajit) ![](https://badgen.net/badge/license/MIT/green)
+![](https://img.shields.io/github/repo-size/mcagabe19/linc_luajit-legacy) ![](https://badgen.net/github/open-issues/mcagabe19/linc_luajit-legacy) ![](https://badgen.net/badge/license/MIT/green)
 
-Haxe/hxcpp @:native bindings for [LuaJIT](https://luajit.org/luajit.html).
+[hxluajit](https://github.com/MAJigsaw77/hxluajit) but with [linc_luajit](https://github.com/AndreiRudenko/linc_luajit) classes.
 
 ### Installation
 
-You can install it through `Haxelib`
+You can install it through `Git`, if you want the latest updates
 ```bash
-haxelib install hxluajit
-```
-Or through `Git`, if you want the latest updates
-```bash
-haxelib git hxluajit https://github.com/MAJigsaw77/hxluajit.git
-```
-
-### Dependencies
-
-On ***Linux*** you need to install `luajit` from your distro's package manager.
-
-* [Debian](https://debian.org) based distributions:
-  ```bash
-  sudo apt-get install libluajit-5.1-dev
-  ```
-
-* [Arch](https://archlinux.org) based distributions:
-  ```bash
-  sudo pacman -S luajit
-  ```
-
-* [Gentoo](https://gentoo.org) based distributions:
-  ```bash
-  sudo emerge dev-lang/luajit
-  ```
+haxelib git linc_luajit https://github.com/mcagabe19/linc_luajit-legacy
+````
 
 ### Usage Example
 

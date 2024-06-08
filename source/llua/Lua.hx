@@ -2,7 +2,7 @@ package llua;
 
 import hxluajit.Types;
 
-@:buildXml('<include name="${haxelib:hxluajit}/project/Build.xml" />')
+@:buildXml('<include name="${haxelib:linc_luajit}/project/Build.xml" />')
 @:include('lua.hpp')
 @:unreflective
 extern class Lua

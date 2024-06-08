@@ -6,7 +6,7 @@ package hxluajit;
 
 class Types {} // blank
 
-@:buildXml('<include name="${haxelib:hxluajit}/project/Build.xml" />')
+@:buildXml('<include name="${haxelib:linc_luajit}/project/Build.xml" />')
 @:include('lua.hpp')
 @:native('lua_State')
 extern class Lua_State {}
@@ -42,7 +42,7 @@ typedef Lua_Number = Float;
 typedef Lua_Integer = cpp.PtrDiffT;
 
 /* activation record */
-@:buildXml('<include name="${haxelib:hxluajit}/project/Build.xml" />')
+@:buildXml('<include name="${haxelib:linc_luajit}/project/Build.xml" />')
 @:include('lua.hpp')
 @:unreflective
 @:structAccess
@@ -70,7 +70,7 @@ extern class Lua_Debug
  */
 typedef Lua_Hook = cpp.Callable<(L:cpp.RawPointer<Lua_State>, ar:cpp.RawPointer<Lua_Debug>) -> Void>;
 
-@:buildXml('<include name="${haxelib:hxluajit}/project/Build.xml" />')
+@:buildXml('<include name="${haxelib:linc_luajit}/project/Build.xml" />')
 @:include('lua.hpp')
 @:unreflective
 @:structAccess
@@ -86,7 +86,7 @@ extern class LuaL_Buffer
 	var buffer:cpp.Char;
 }
 
-@:buildXml('<include name="${haxelib:hxluajit}/project/Build.xml" />')
+@:buildXml('<include name="${haxelib:linc_luajit}/project/Build.xml" />')
 @:include('lua.hpp')
 @:unreflective
 @:structAccess
