@@ -3,6 +3,7 @@ package llua;
 import llua.State;
 import llua.Lua;
 import llua.LuaL;
+import llua.Macro.*;
 import haxe.DynamicAccess;
 class Convert {
 
