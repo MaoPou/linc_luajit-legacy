@@ -7,6 +7,7 @@ import hxluajit.Types;
 @:unreflective
 extern class Lua
 {
+	public static inline var sendErrorsToLua:Bool = true; // to support super's linc_luajit, ugh feels cringe tbh
 	public static inline var LUA_OK:Int = 0;
 	public static inline var LUA_YIELD:Int = 1;
 	public static inline var LUA_ERRRUN:Int = 2;
