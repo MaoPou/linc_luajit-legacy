@@ -6,7 +6,7 @@
 
 ### Installation
 
-You can install it through `Git`, if you want the latest updates
+You can install it through `Git`:
 ```bash
 haxelib git linc_luajit https://github.com/mcagabe19/linc_luajit-legacy
 ````
