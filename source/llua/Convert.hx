@@ -1,5 +1,8 @@
 package llua;
 
+#if !cpp
+#error 'LuaJIT supports only C++ target platforms.'
+#end
 import haxe.DynamicAccess;
 import haxe.ds.ObjectMap;
 import haxe.ds.StringMap;
@@ -20,6 +23,7 @@ class Convert
 				return Lua.tonumber(l, idx);
 			case type if (type == Lua.LUA_TSTRING):
 				return cast(Lua.tostring(l, idx), String);
+			// PROBABLY THIS TABLE SYSTEM IS BROKEN
 			case type if (type == Lua.LUA_TTABLE):
 				var count:Int = 0;
 				var array:Bool = true;
@@ -86,10 +90,11 @@ class Convert
 
 					return ret;
 				}
-			case Lua.LUA_TFUNCTION:
-				return new LuaCallback(l, LuaL.ref(l, Lua.LUA_REGISTRYINDEX/*idx*/);
+			// needed fix "Dynamic" to "lua_State *"
+			/*case Lua.LUA_TFUNCTION:
+				return new LuaCallback(l, LuaL.ref(l, Lua.LUA_REGISTRYINDEX));*/
 			default:
-				trace('Couldn\'t convert "${cast (Lua.typename(l, idx), String)}" to Haxe.');
+				Sys.println('Couldn\'t convert "${cast (Lua.typename(l, idx), String)}" to Haxe.');
 		}
 
 		return null;
@@ -139,7 +144,7 @@ class Convert
 					Lua.settable(l, -3);
 				}
 			default:
-				trace('Couldn\'t convert "${Type.typeof(val)}" to Lua.');
+				Sys.println('Couldn\'t convert "${Type.typeof(val)}" to Lua.');
 		}
 	}
 }

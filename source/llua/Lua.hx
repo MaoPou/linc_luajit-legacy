@@ -1,5 +1,8 @@
 package llua;
 
+#if !cpp
+#error 'LuaJIT supports only C++ target platforms.'
+#end
 import hxluajit.Types;
 
 @:buildXml('<include name="${haxelib:linc_luajit}/project/Build.xml" />')
@@ -89,7 +92,7 @@ extern class Lua
 	static function _isboolean(L:cpp.RawPointer<Lua_State>, idx:Int):Int;
 
 	static inline function isboolean(L:cpp.RawPointer<Lua_State>, idx:Int):Bool {
-		return _isboolean(l, idx) != 0;
+		return _isboolean(L, idx) != 0;
 	}
 
 	@:noCompletion
@@ -97,7 +100,7 @@ extern class Lua
 	static function _isstring(L:cpp.RawPointer<Lua_State>, idx:Int) : Int;
 
 	static inline function isstring(L:cpp.RawPointer<Lua_State>, idx:Int) : Bool {
-		return _isstring(l, idx) != 0;
+		return _isstring(L, idx) != 0;
 	}
 
 	@:native('lua_toboolean')
@@ -108,14 +111,19 @@ extern class Lua
 	static function _isnumber(L:cpp.RawPointer<Lua_State>, idx:Int):Int;
 
 	static inline function isnumber(L:cpp.RawPointer<Lua_State>, idx:Int):Bool {
-		return _isnumber(l, idx) != 0;
+		return _isnumber(L, idx) != 0;
 	}
 
 	@:native('lua_tonumber')
 	static function tonumber(L:cpp.RawPointer<Lua_State>, idx:Int):Lua_Number;
 
+	@:noCompletion
 	@:native('lua_isfunction')
-	static function isfunction(L:cpp.RawPointer<Lua_State>, n:Int):Int;
+	static function _isfunction(l:State, idx:Int) : Int;
+
+	static inline function isfunction(l:State, idx:Int) : Bool {
+		return _isfunction(l, idx) != 0;
+	}
 
 	@:native('lua_pcall')
 	static function pcall(L:cpp.RawPointer<Lua_State>, nargs:Int, nresults:Int, errfunc:Int):Int;

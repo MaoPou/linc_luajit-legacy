@@ -1,5 +1,8 @@
 package llua;
 
+#if !cpp
+#error 'LuaJIT supports only C++ target platforms.'
+#end
 import hxluajit.Types;
 
 class LuaCallback {
@@ -15,7 +18,7 @@ class LuaCallback {
     public function call(args:Array<Dynamic> = null)
     {
         Lua.rawgeti(L, Lua.LUA_REGISTRYINDEX, this.ref);
-        if (Lua.isfunction(l, -1))
+        if (Lua.isfunction(L, -1))
         {
             if (args == null) args = [];
             for (arg in args) Convert.toLua(L, arg);
@@ -39,5 +42,5 @@ class LuaCallback {
     }
 
     public function dispose()
-        LuaL.unref(), Lua.LUA_REGISTRYINDEX, ref);
+        LuaL.unref(L, Lua.LUA_REGISTRYINDEX, ref);
 }
