@@ -157,7 +157,7 @@ extern class Lua
 		final nargs:Int = hxluajit.Lua.gettop(L);
 
 		for (i in 0...nargs)
-			trace(cast(hxluajit.Lua.tostring(L, i + 1), String));
+			Sys.println(cast(hxluajit.Lua.tostring(L, i + 1), String));
 
 		hxluajit.Lua.pop(L, nargs);
 		return 0;
