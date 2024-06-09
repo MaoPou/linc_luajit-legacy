@@ -86,6 +86,8 @@ class Convert
 
 					return ret;
 				}
+			case Lua.LUA_TFUNCTION:
+				return new LuaCallback(l, LuaL.ref(l, Lua.LUA_REGISTRYINDEX/*idx*/);
 			default:
 				trace('Couldn\'t convert "${cast (Lua.typename(l, idx), String)}" to Haxe.');
 		}
