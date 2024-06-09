@@ -45,7 +45,7 @@ class LuaCallback
 							err = "Unknown Error";
 					}
 				}
-				trace("Error on callback: " + err);
+				Sys.println("Error on callback: " + err);
 			}
 		}
 	}
