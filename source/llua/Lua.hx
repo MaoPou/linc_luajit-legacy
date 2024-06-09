@@ -156,16 +156,16 @@ class Lua_helper
 {
 	public static var callbacks:Map<String, Dynamic> = new Map();
 
-	public static inline function add_callback(L:cpp.RawPointer<Lua_State>, fname:String, f:Dynamic):Bool
+	public static function add_callback(L:cpp.RawPointer<Lua_State>, fname:String, f:Dynamic):Bool
 	{
 		callbacks.set(fname, f);
 		hxluajit.Lua.pushstring(L, fname);
-		hxluajit.Lua.pushcclosure(L, cpp.Function.fromStaticFunction(callback), 1);
+		hxluajit.Lua.pushcclosure(L, cpp.Function.fromStaticFunction(add_callback_function), 1);
 		hxluajit.Lua.setglobal(L, fname);
 		return true;
 	}
 
-	private static function callback(L:cpp.RawPointer<Lua_State>):Int
+	private static function add_callback_function(L:cpp.RawPointer<Lua_State>):Int
 	{
 		final nargs:Int = hxluajit.Lua.gettop(L);
 
