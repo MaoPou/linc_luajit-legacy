@@ -91,15 +91,17 @@ extern class Lua
 	@:native('lua_isboolean')
 	static function _isboolean(L:cpp.RawPointer<Lua_State>, idx:Int):Int;
 
-	static inline function isboolean(L:cpp.RawPointer<Lua_State>, idx:Int):Bool {
+	static inline function isboolean(L:cpp.RawPointer<Lua_State>, idx:Int):Bool
+	{
 		return _isboolean(L, idx) != 0;
 	}
 
 	@:noCompletion
 	@:native('lua_isstring')
-	static function _isstring(L:cpp.RawPointer<Lua_State>, idx:Int) : Int;
+	static function _isstring(L:cpp.RawPointer<Lua_State>, idx:Int):Int;
 
-	static inline function isstring(L:cpp.RawPointer<Lua_State>, idx:Int) : Bool {
+	static inline function isstring(L:cpp.RawPointer<Lua_State>, idx:Int):Bool
+	{
 		return _isstring(L, idx) != 0;
 	}
 
@@ -110,7 +112,8 @@ extern class Lua
 	@:native('lua_isnumber')
 	static function _isnumber(L:cpp.RawPointer<Lua_State>, idx:Int):Int;
 
-	static inline function isnumber(L:cpp.RawPointer<Lua_State>, idx:Int):Bool {
+	static inline function isnumber(L:cpp.RawPointer<Lua_State>, idx:Int):Bool
+	{
 		return _isnumber(L, idx) != 0;
 	}
 
@@ -119,9 +122,10 @@ extern class Lua
 
 	@:noCompletion
 	@:native('lua_isfunction')
-	static function _isfunction(l:State, idx:Int) : Int;
+	static function _isfunction(l:State, idx:Int):Int;
 
-	static inline function isfunction(l:State, idx:Int) : Bool {
+	static inline function isfunction(l:State, idx:Int):Bool
+	{
 		return _isfunction(l, idx) != 0;
 	}
 

@@ -3,6 +3,7 @@ package llua;
 #if !cpp
 #error 'LuaJIT supports only C++ target platforms.'
 #end
+import llua.Macro.*;
 import haxe.DynamicAccess;
 import haxe.ds.ObjectMap;
 import haxe.ds.StringMap;
@@ -23,76 +24,53 @@ class Convert
 				return Lua.tonumber(l, idx);
 			case type if (type == Lua.LUA_TSTRING):
 				return cast(Lua.tostring(l, idx), String);
-			// PROBABLY THIS TABLE SYSTEM IS BROKEN
 			case type if (type == Lua.LUA_TTABLE):
-				var count:Int = 0;
-				var array:Bool = true;
+				var count = 0;
+				var array = true;
 
-				Lua.pushnil(l);
-
-				while (Lua.next(l, idx < 0 ? idx - 1 : idx) != 0)
-				{
+				loopTable(l, idx, {
 					if (array)
 					{
-						if (Lua.isnumber(l, -2))
+						if (Lua.type(l, -2) != Lua.LUA_TNUMBER)
 							array = false;
 						else
 						{
-							final index:Float = Lua.tonumber(l, -2);
+							var index = Lua.tonumber(l, -2);
 							if (index < 0 || Std.int(index) != index)
 								array = false;
 						}
 					}
-
 					count++;
-					Lua.pop(l, 1);
-				}
+				});
 
-				if (count == 0)
-					return
-					{
-					};
+				return if (count == 0)
+				{
+					{};
+				}
 				else if (array)
 				{
-					var ret:Array<Dynamic> = [];
-
-					Lua.pushnil(l);
-
-					while (Lua.next(l, idx < 0 ? idx - 1 : idx) != 0)
-					{
-						ret[Std.int(Lua.tonumber(l, -2)) - 1] = fromLua(l, -1);
-
-						Lua.pop(l, 1);
-					}
-
-					return ret;
+					var v = [];
+					loopTable(l, idx, {
+						var index = Std.int(Lua.tonumber(l, -2)) - 1;
+						v[index] = fromLua(l, -1);
+					});
+					cast v;
 				}
 				else
 				{
-					var ret:DynamicAccess<Dynamic> = {};
-
-					Lua.pushnil(l);
-
-					while (Lua.next(l, idx < 0 ? idx - 1 : idx) != 0)
-					{
-						switch (Lua.type(l, -2))
+					var v:DynamicAccess<Any> = {};
+					loopTable(l, idx, {
+						switch Lua.type(l, -2)
 						{
-							case type if (type == Lua.LUA_TSTRING):
-								ret.set(cast(Lua.tostring(l, -2), String), fromLua(l, -1));
-
-								Lua.pop(l, 1);
-							case type if (type == Lua.LUA_TNUMBER):
-								ret.set(Std.string(Lua.tonumber(l, -2)), fromLua(l, -1));
-
-								Lua.pop(l, 1);
+							case t if (t == Lua.LUA_TSTRING): v.set(Lua.tostring(l, -2), fromLua(l, -1));
+							case t if (t == Lua.LUA_TNUMBER): v.set(Std.string(Lua.tonumber(l, -2)), fromLua(l, -1));
 						}
-					}
-
-					return ret;
+					});
+					cast v;
 				}
 			// needed fix "Dynamic" to "lua_State *"
 			/*case Lua.LUA_TFUNCTION:
-				return new LuaCallback(l, LuaL.ref(l, Lua.LUA_REGISTRYINDEX));*/
+				return new LuaCallback(l, LuaL.ref(l, Lua.LUA_REGISTRYINDEX)); */
 			default:
 				Sys.println('Couldn\'t convert "${cast (Lua.typename(l, idx), String)}" to Haxe.');
 		}
