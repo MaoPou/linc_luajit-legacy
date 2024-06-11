@@ -175,7 +175,7 @@ class Lua_helper {
 	public static function add_callback(L:cpp.RawPointer<Lua_State>, fname:String, f:Dynamic):Bool {
 		callbacks.set(fname, f);
 		hxluajit.Lua.pushstring(L, fname);
-		hxluajit.Lua.pushcclosure(L, cpp.Function.fromStaticFunction(callback_handler), 1);
+		hxluajit.Lua.pushcclosure(L, cpp.Callable.fromStaticFunction(callback_handler), 1);
 		hxluajit.Lua.setglobal(L, fname);
 		return true;
 	}
