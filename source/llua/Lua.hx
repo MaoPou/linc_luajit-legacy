@@ -190,10 +190,11 @@ class Lua_helper {
 	}
 
 	private static function callback_handler(L:cpp.RawPointer<Lua_State>):Int {
-		if(callbacks_function != null)
+		if (callbacks_function != null)
 			return callbacks_function(L, hxluajit.Lua.tostring(L, hxluajit.Lua.upvalueindex(1)));
 
-		final nargs:Int = hxluajit.Lua.gettop(L);
+		try {
+			final nargs:Int = hxluajit.Lua.gettop(L);
 
 			var args:Array<Dynamic> = [];
 			for (i in 0...nargs)
