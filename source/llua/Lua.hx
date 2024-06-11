@@ -146,7 +146,7 @@ extern class Lua {
 
 	static inline function init_callbacks(L:cpp.RawPointer<Lua_State>):Void {
 		hxluajit.Lua.register(L, "print", cpp.Function.fromStaticFunction(print));
-		Lua.set_callbacks_function(cpp.Funciton.fromStaticFunction(Lua_helper.callback_handler));
+		Lua.set_callbacks_function(cpp.Function.fromStaticFunction(Lua_helper.callback_handler));
 	}
 
 	static inline function print(L:cpp.RawPointer<Lua_State>):Int {
@@ -177,7 +177,7 @@ class Lua_helper {
 	}
 
 	public function remove_callback(L:cpp.RawPointer<Lua_State>, key:String) {
-		if (lua == null)
+		if (L == null)
 			return;
 
 		callbacks.remove(key);
