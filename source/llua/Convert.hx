@@ -72,7 +72,7 @@ class Convert {
 			case TNull:
 				Lua.pushnil(l);
 			case TInt:
-				Lua.pushinteger(l, cast(val, Int));
+				Lua.pushinteger(l, val);
 			case TFloat:
 				Lua.pushnumber(l, val);
 			case TBool:
