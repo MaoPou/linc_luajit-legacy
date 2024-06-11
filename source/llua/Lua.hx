@@ -31,9 +31,6 @@ extern class Lua {
 	public static inline var LUA_TTHREAD:Int = 8;
 	public static inline var LUA_MINSTACK:Int = 20;
 
-	@:access(Lua_helper)
-	private static var callbacks_function:Null<cpp.Callable<State->String->Int>>;
-
 	@:native('lua_pushnil')
 	static function pushnil(L:cpp.RawPointer<Lua_State>):Void;
 
@@ -149,7 +146,6 @@ extern class Lua {
 
 	static inline function init_callbacks(L:cpp.RawPointer<Lua_State>):Void {
 		hxluajit.Lua.register(L, "print", cpp.Function.fromStaticFunction(print));
-		//Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(Lua_helper.callback_handler));
 	}
 
 	static inline function print(L:cpp.RawPointer<Lua_State>):Int {
@@ -162,10 +158,7 @@ extern class Lua {
 		return 0;
 	}
 
-	static inline function set_callbacks_function(f:cpp.Callable<State->String->Int>):Void {
-		callbacks_function = f;
-		//cpp.Callable.fromStaticFunction(f);
-	}
+	static inline function set_callbacks_function(f:cpp.Callable<State->String->Int>):Void {}
 }
 
 class Lua_helper {
@@ -191,23 +184,32 @@ class Lua_helper {
 	}
 
 	private static function callback_handler(L:cpp.RawPointer<Lua_State>):Int {
-		final nargs:Int = hxluajit.Lua.gettop(L);
+		try {
+			final nargs:Int = hxluajit.Lua.gettop(L);
 
-		var args:Array<Dynamic> = [];
-		for (i in 0...nargs)
-			args[i] = Convert.fromLua(L, i + 1);
+			var args:Array<Dynamic> = [];
+			for (i in 0...nargs)
+				args[i] = Convert.fromLua(L, i + 1);
 
-		hxluajit.Lua.pop(L, nargs);
+			hxluajit.Lua.pop(L, nargs);
 
-		final name:String = hxluajit.Lua.tostring(L, hxluajit.Lua.upvalueindex(1));
+			final name:String = hxluajit.Lua.tostring(L, hxluajit.Lua.upvalueindex(1));
 
-		if (callbacks.exists(name)) {
-			var ret:Dynamic = Reflect.callMethod(null, callbacks.get(name), args);
+			if (callbacks.exists(name)) {
+				var ret:Dynamic = Reflect.callMethod(null, callbacks.get(name), args);
 
-			if (ret != null) {
-				Convert.toLua(L, ret);
-				return Lua.callbacks_function == null ? 1 : Lua.callbacks_function.call(L, name);
+				if (ret != null) {
+					Convert.toLua(L, ret);
+					return 1;
+				}
 			}
+		} catch (e:Dynamic) {
+			if (sendErrorsToLua) {
+				LuaL.error(l, 'CALLBACK ERROR! ${if (e.message != null) e.message else e}');
+				return 0;
+			}
+			trace(e);
+			throw(e);
 		}
 
 		return 0;
