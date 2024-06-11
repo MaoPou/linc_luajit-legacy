@@ -206,7 +206,7 @@ class Lua_helper {
 
 			if (ret != null) {
 				Convert.toLua(L, ret);
-				return Lua.callbacks_function == null ? 1 : Lua.callbacks_function(L, name);
+				return Lua.callbacks_function == null ? 1 : Lua.callbacks_function.call(L, name);
 			}
 		}
 
