@@ -31,6 +31,9 @@ extern class Lua {
 	public static inline var LUA_TTHREAD:Int = 8;
 	public static inline var LUA_MINSTACK:Int = 20;
 
+	@:access(Lua_helper)
+	private static var callbacks_function:Null<cpp.Callable<State->String->Int>>;
+
 	@:native('lua_pushnil')
 	static function pushnil(L:cpp.RawPointer<Lua_State>):Void;
 
@@ -160,6 +163,7 @@ extern class Lua {
 	}
 
 	static inline function set_callbacks_function(f:cpp.Callable<State->String->Int>):Void {
+		callbacks_function = f;
 		//cpp.Callable.fromStaticFunction(f);
 	}
 }
@@ -202,7 +206,7 @@ class Lua_helper {
 
 			if (ret != null) {
 				Convert.toLua(L, ret);
-				return 1;
+				return Lua.callbacks_function == null ? 1 : Lua.callbacks_function(L, name);
 			}
 		}
 
