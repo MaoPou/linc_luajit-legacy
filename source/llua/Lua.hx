@@ -10,7 +10,6 @@ import hxluajit.Types;
 @:unreflective
 extern class Lua
 {
-	public static inline var sendErrorsToLua:Bool = true; // to support super's linc_luajit, ugh feels cringe tbh
 	public static inline var LUA_MULTRET:Int = (-1);
 	public static inline var LUA_REGISTRYINDEX:Int = (-10000);
 	public static inline var LUA_ENVIRONINDEX:Int = (-10001);
@@ -32,6 +31,8 @@ extern class Lua
 	public static inline var LUA_TUSERDATA:Int = 7;
 	public static inline var LUA_TTHREAD:Int = 8;
 	public static inline var LUA_MINSTACK:Int = 20;
+
+	// static function set_callbacks_function(f:cpp.Callable<State->String->Int>) : Void
 
 	@:native('lua_pushnil')
 	static function pushnil(L:cpp.RawPointer<Lua_State>):Void;
@@ -86,6 +87,9 @@ extern class Lua
 
 	@:native('lua_close')
 	static function close(L:cpp.RawPointer<Lua_State>):Void;
+
+	@:native('lua_gettop')
+	static function gettop(L:cpp.RawPointer<Lua_State>):Int;
 
 	@:noCompletion
 	@:native('lua_isboolean')
@@ -166,6 +170,7 @@ extern class Lua
 
 class Lua_helper
 {
+	public static var sendErrorsToLua:Bool = true;
 	public static var callbacks:Map<String, Dynamic> = new Map();
 
 	public static function add_callback(L:cpp.RawPointer<Lua_State>, fname:String, f:Dynamic):Bool
