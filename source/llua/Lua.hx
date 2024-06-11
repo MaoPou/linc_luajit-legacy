@@ -205,7 +205,7 @@ class Lua_helper {
 			}
 		} catch (e:Dynamic) {
 			if (sendErrorsToLua) {
-				LuaL.error(l, 'CALLBACK ERROR! ${if (e.message != null) e.message else e}');
+				LuaL.error(L, 'CALLBACK ERROR! ${e.message != null ? e.message : e}');
 				return 0;
 			}
 			trace(e);
