@@ -31,9 +31,6 @@ extern class Lua {
 	public static inline var LUA_TTHREAD:Int = 8;
 	public static inline var LUA_MINSTACK:Int = 20;
 
-	@:access(Lua_helper)
-	private static var callbacks_function:Null<cpp.Callable<State->String->Int>>;
-
 	@:native('lua_pushnil')
 	static function pushnil(L:cpp.RawPointer<Lua_State>):Void;
 
@@ -163,7 +160,8 @@ extern class Lua {
 	}
 
 	static inline function set_callbacks_function(f:cpp.Callable<State->String->Int>):Void {
-		callbacks_function = f;
+		@:privateAccess
+		Lua_helper.callbacks_function = f;
 		//cpp.Callable.fromStaticFunction(f);
 	}
 }
@@ -171,6 +169,9 @@ extern class Lua {
 class Lua_helper {
 	public static var sendErrorsToLua:Bool = true;
 	public static var callbacks:Map<String, Dynamic> = new Map();
+
+	@:noCompletion
+	private static var callbacks_function:cpp.Callable<State->String->Int> = null;
 
 	public static function add_callback(L:cpp.RawPointer<Lua_State>, fname:String, f:Dynamic):Bool {
 		callbacks.set(fname, f);
@@ -191,6 +192,9 @@ class Lua_helper {
 	}
 
 	private static function callback_handler(L:cpp.RawPointer<Lua_State>):Int {
+		if(callbacks_function != null)
+			return callbacks_function(L, hxluajit.Lua.tostring(L, hxluajit.Lua.upvalueindex(1)));
+
 		final nargs:Int = hxluajit.Lua.gettop(L);
 
 		var args:Array<Dynamic> = [];
@@ -206,7 +210,7 @@ class Lua_helper {
 
 			if (ret != null) {
 				Convert.toLua(L, ret);
-				return Lua.callbacks_function == null ? 1 : Lua.callbacks_function.call(L, name);
+				return callbacks_function == null ? 1 : callbacks_function.call(L, name);
 			}
 		}
 
