@@ -160,7 +160,7 @@ extern class Lua {
 	}
 
 	static inline function set_callbacks_function(f:cpp.Callable<State->String->Int>):Void {
-		cpp.Function.fromStaticFunction(f);
+		return cpp.Function.fromStaticFunction(f);
 	}
 }
 
