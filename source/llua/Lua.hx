@@ -146,7 +146,6 @@ extern class Lua {
 
 	static inline function init_callbacks(L:cpp.RawPointer<Lua_State>):Void {
 		hxluajit.Lua.register(L, "print", cpp.Function.fromStaticFunction(print));
-		//Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(Lua_helper.callback_handler));
 	}
 
 	static inline function print(L:cpp.RawPointer<Lua_State>):Int {
@@ -162,7 +161,6 @@ extern class Lua {
 	static inline function set_callbacks_function(f:cpp.Callable<State->String->Int>):Void {
 		@:privateAccess
 		Lua_helper.callbacks_function = f;
-		//cpp.Callable.fromStaticFunction(f);
 	}
 }
 
@@ -197,21 +195,29 @@ class Lua_helper {
 
 		final nargs:Int = hxluajit.Lua.gettop(L);
 
-		var args:Array<Dynamic> = [];
-		for (i in 0...nargs)
-			args[i] = Convert.fromLua(L, i + 1);
+			var args:Array<Dynamic> = [];
+			for (i in 0...nargs)
+				args[i] = Convert.fromLua(L, i + 1);
 
-		hxluajit.Lua.pop(L, nargs);
+			hxluajit.Lua.pop(L, nargs);
 
-		final name:String = hxluajit.Lua.tostring(L, hxluajit.Lua.upvalueindex(1));
+			final name:String = hxluajit.Lua.tostring(L, hxluajit.Lua.upvalueindex(1));
 
-		if (callbacks.exists(name)) {
-			var ret:Dynamic = Reflect.callMethod(null, callbacks.get(name), args);
+			if (callbacks.exists(name)) {
+				var ret:Dynamic = Reflect.callMethod(null, callbacks.get(name), args);
 
-			if (ret != null) {
-				Convert.toLua(L, ret);
-				return callbacks_function == null ? 1 : callbacks_function.call(L, name);
+				if (ret != null) {
+					Convert.toLua(L, ret);
+					return 1;
+				}
 			}
+		} catch (e:Dynamic) {
+			if (sendErrorsToLua) {
+				LuaL.error(L, 'CALLBACK ERROR! ${e.message != null ? e.message : e}');
+				return 0;
+			}
+			trace(e);
+			throw(e);
 		}
 
 		return 0;
