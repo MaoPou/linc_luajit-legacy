@@ -10,12 +10,9 @@ import haxe.ds.StringMap;
 import llua.State;
 import llua.Lua;
 
-class Convert
-{
-	public static function fromLua(l:State, idx:Int):Dynamic
-	{
-		switch (Lua.type(l, idx))
-		{
+class Convert {
+	public static function fromLua(l:State, idx:Int):Dynamic {
+		switch (Lua.type(l, idx)) {
 			case type if (type == Lua.LUA_TNIL):
 				return null;
 			case type if (type == Lua.LUA_TBOOLEAN):
@@ -29,12 +26,10 @@ class Convert
 				var array = true;
 
 				loopTable(l, idx, {
-					if (array)
-					{
+					if (array) {
 						if (Lua.type(l, -2) != Lua.LUA_TNUMBER)
 							array = false;
-						else
-						{
+						else {
 							var index = Lua.tonumber(l, -2);
 							if (index < 0 || Std.int(index) != index)
 								array = false;
@@ -43,25 +38,19 @@ class Convert
 					count++;
 				});
 
-				return if (count == 0)
-				{
+				return if (count == 0) {
 					{};
-				}
-				else if (array)
-				{
+				} else if (array) {
 					var v = [];
 					loopTable(l, idx, {
 						var index = Std.int(Lua.tonumber(l, -2)) - 1;
 						v[index] = fromLua(l, -1);
 					});
 					cast v;
-				}
-				else
-				{
+				} else {
 					var v:DynamicAccess<Any> = {};
 					loopTable(l, idx, {
-						switch Lua.type(l, -2)
-						{
+						switch Lua.type(l, -2) {
 							case t if (t == Lua.LUA_TSTRING): v.set(Lua.tostring(l, -2), fromLua(l, -1));
 							case t if (t == Lua.LUA_TNUMBER): v.set(Std.string(Lua.tonumber(l, -2)), fromLua(l, -1));
 						}
@@ -78,10 +67,8 @@ class Convert
 		return null;
 	}
 
-	public static function toLua(l:State, val:Dynamic):Void
-	{
-		switch (Type.typeof(val))
-		{
+	public static function toLua(l:State, val:Dynamic):Void {
+		switch (Type.typeof(val)) {
 			case TNull:
 				Lua.pushnil(l);
 			case TInt:
@@ -93,8 +80,7 @@ class Convert
 			case TClass(Array):
 				Lua.createtable(l, val.length, 0);
 
-				for (i in 0...val.length)
-				{
+				for (i in 0...val.length) {
 					Lua.pushinteger(l, i + 1);
 					toLua(l, val[i]);
 					Lua.settable(l, -3);
@@ -104,8 +90,7 @@ class Convert
 
 				Lua.createtable(l, Lambda.count(map), 0);
 
-				for (key => value in map)
-				{
+				for (key => value in map) {
 					Lua.pushstring(l, Std.isOfType(key, String) ? key : Std.string(key));
 					toLua(l, value);
 					Lua.settable(l, -3);
@@ -115,8 +100,7 @@ class Convert
 			case TObject:
 				Lua.createtable(l, Reflect.fields(val).length, 0);
 
-				for (key in Reflect.fields(val))
-				{
+				for (key in Reflect.fields(val)) {
 					Lua.pushstring(l, key);
 					toLua(l, Reflect.field(val, key));
 					Lua.settable(l, -3);

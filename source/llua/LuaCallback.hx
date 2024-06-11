@@ -5,36 +5,29 @@ package llua;
 #end
 import hxluajit.Types;
 
-class LuaCallback
-{
+class LuaCallback {
 	private final L:cpp.RawPointer<Lua_State>;
 
 	public var ref(default, null):Int;
 
-	public function new(lua:cpp.RawPointer<Lua_State>, ref:Int)
-	{
+	public function new(lua:cpp.RawPointer<Lua_State>, ref:Int) {
 		this.L = lua;
 		this.ref = ref;
 	}
 
-	public function call(args:Array<Dynamic> = null)
-	{
+	public function call(args:Array<Dynamic> = null) {
 		Lua.rawgeti(L, Lua.LUA_REGISTRYINDEX, this.ref);
-		if (Lua.isfunction(L, -1))
-		{
+		if (Lua.isfunction(L, -1)) {
 			if (args == null)
 				args = [];
 			for (arg in args)
 				Convert.toLua(L, arg);
 			var status:Int = Lua.pcall(L, args.length, 0, 0);
-			if (status != Lua.LUA_OK)
-			{
+			if (status != Lua.LUA_OK) {
 				var err:String = Lua.tostring(L, -1);
 				Lua.pop(L, 1);
-				if (err == null || err == "")
-				{
-					switch (status)
-					{
+				if (err == null || err == "") {
+					switch (status) {
 						case Lua.LUA_ERRRUN:
 							err = "Runtime Error";
 						case Lua.LUA_ERRMEM:

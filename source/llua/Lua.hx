@@ -8,8 +8,7 @@ import hxluajit.Types;
 @:buildXml('<include name="${haxelib:linc_luajit}/project/Build.xml" />')
 @:include('lua.hpp')
 @:unreflective
-extern class Lua
-{
+extern class Lua {
 	public static inline var LUA_MULTRET:Int = (-1);
 	public static inline var LUA_REGISTRYINDEX:Int = (-10000);
 	public static inline var LUA_ENVIRONINDEX:Int = (-10001);
@@ -31,8 +30,6 @@ extern class Lua
 	public static inline var LUA_TUSERDATA:Int = 7;
 	public static inline var LUA_TTHREAD:Int = 8;
 	public static inline var LUA_MINSTACK:Int = 20;
-
-	// static function set_callbacks_function(f:cpp.Callable<State->String->Int>) : Void
 
 	@:native('lua_pushnil')
 	static function pushnil(L:cpp.RawPointer<Lua_State>):Void;
@@ -95,8 +92,7 @@ extern class Lua
 	@:native('lua_isboolean')
 	static function _isboolean(L:cpp.RawPointer<Lua_State>, idx:Int):Int;
 
-	static inline function isboolean(L:cpp.RawPointer<Lua_State>, idx:Int):Bool
-	{
+	static inline function isboolean(L:cpp.RawPointer<Lua_State>, idx:Int):Bool {
 		return _isboolean(L, idx) != 0;
 	}
 
@@ -104,8 +100,7 @@ extern class Lua
 	@:native('lua_isstring')
 	static function _isstring(L:cpp.RawPointer<Lua_State>, idx:Int):Int;
 
-	static inline function isstring(L:cpp.RawPointer<Lua_State>, idx:Int):Bool
-	{
+	static inline function isstring(L:cpp.RawPointer<Lua_State>, idx:Int):Bool {
 		return _isstring(L, idx) != 0;
 	}
 
@@ -116,8 +111,7 @@ extern class Lua
 	@:native('lua_isnumber')
 	static function _isnumber(L:cpp.RawPointer<Lua_State>, idx:Int):Int;
 
-	static inline function isnumber(L:cpp.RawPointer<Lua_State>, idx:Int):Bool
-	{
+	static inline function isnumber(L:cpp.RawPointer<Lua_State>, idx:Int):Bool {
 		return _isnumber(L, idx) != 0;
 	}
 
@@ -126,11 +120,10 @@ extern class Lua
 
 	@:noCompletion
 	@:native('lua_isfunction')
-	static function _isfunction(l:State, idx:Int):Int;
+	static function _isfunction(L:cpp.RawPointer<Lua_State>, idx:Int):Int;
 
-	static inline function isfunction(l:State, idx:Int):Bool
-	{
-		return _isfunction(l, idx) != 0;
+	static inline function isfunction(L:cpp.RawPointer<Lua_State>, idx:Int):Bool {
+		return _isfunction(L, idx) != 0;
 	}
 
 	@:native('lua_pcall')
@@ -151,13 +144,12 @@ extern class Lua
 	@:native('lua_rawgeti')
 	static function rawgeti(L:cpp.RawPointer<Lua_State>, idx:Int, n:Int):Int;
 
-	static inline function init_callbacks(L:cpp.RawPointer<Lua_State>):Void
-	{
-		return hxluajit.Lua.register(L, "print", cpp.Function.fromStaticFunction(print));
+	static inline function init_callbacks(L:cpp.RawPointer<Lua_State>):Void {
+		hxluajit.Lua.register(L, "print", cpp.Function.fromStaticFunction(print));
+		Lua.set_callbacks_function(cpp.Funciton.fromStaticFunction(Lua_helper.callback_handler));
 	}
 
-	static inline function print(L:cpp.RawPointer<Lua_State>):Int
-	{
+	static inline function print(L:cpp.RawPointer<Lua_State>):Int {
 		final nargs:Int = hxluajit.Lua.gettop(L);
 
 		for (i in 0...nargs)
@@ -166,24 +158,35 @@ extern class Lua
 		hxluajit.Lua.pop(L, nargs);
 		return 0;
 	}
+
+	static inline function set_callbacks_function(f:cpp.Function<State->String->Int>):Void {
+		cpp.Function.fromStaticFunction(f)
+	}
 }
 
-class Lua_helper
-{
+class Lua_helper {
 	public static var sendErrorsToLua:Bool = true;
 	public static var callbacks:Map<String, Dynamic> = new Map();
 
-	public static function add_callback(L:cpp.RawPointer<Lua_State>, fname:String, f:Dynamic):Bool
-	{
+	public static function add_callback(L:cpp.RawPointer<Lua_State>, fname:String, f:Dynamic):Bool {
 		callbacks.set(fname, f);
 		hxluajit.Lua.pushstring(L, fname);
-		hxluajit.Lua.pushcclosure(L, cpp.Function.fromStaticFunction(add_callback_function), 1);
+		hxluajit.Lua.pushcclosure(L, cpp.Function.fromStaticFunction(callback_handler), 1);
 		hxluajit.Lua.setglobal(L, fname);
 		return true;
 	}
 
-	private static function add_callback_function(L:cpp.RawPointer<Lua_State>):Int
-	{
+	public function remove_callback(L:cpp.RawPointer<Lua_State>, key:String) {
+		if (lua == null)
+			return;
+
+		callbacks.remove(key);
+
+		hxluajit.Lua.pushnil(L);
+		hxluajit.Lua.setglobal(L, key);
+	}
+
+	private static function callback_handler(L:cpp.RawPointer<Lua_State>):Int {
 		final nargs:Int = hxluajit.Lua.gettop(L);
 
 		var args:Array<Dynamic> = [];
@@ -194,12 +197,10 @@ class Lua_helper
 
 		final name:String = hxluajit.Lua.tostring(L, hxluajit.Lua.upvalueindex(1));
 
-		if (callbacks.exists(name))
-		{
+		if (callbacks.exists(name)) {
 			var ret:Dynamic = Reflect.callMethod(null, callbacks.get(name), args);
 
-			if (ret != null)
-			{
+			if (ret != null) {
 				Convert.toLua(L, ret);
 				return 1;
 			}
