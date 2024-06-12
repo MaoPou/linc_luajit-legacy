@@ -10,8 +10,8 @@ class LuaCallback {
 
 	public var ref(default, null):Int;
 
-	public function new(lua:cpp.RawPointer<Lua_State>, ref:Int) {
-		this.L = lua;
+	public function new(lua:cpp.Pointer<Lua_State>, ref:Int) {
+		this.L = lua.raw;
 		this.ref = ref;
 	}
 
