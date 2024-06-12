@@ -100,7 +100,7 @@ class Convert {
 					});
 					cast v;
 				}
-			case Lua.LUA_TFUNCTION:
+			case type if (type == Lua.LUA_TFUNCTION):
 				return new LuaCallback(cpp.Pointer.fromRaw(l), LuaL.ref(l, Lua.LUA_REGISTRYINDEX));
 			default:
 				Sys.println('Couldn\'t convert "${cast (Lua.typename(l, idx), String)}" to Haxe.');
