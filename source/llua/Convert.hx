@@ -100,9 +100,8 @@ class Convert {
 					});
 					cast v;
 				}
-			// needed fix "Dynamic" to "lua_State *"
-			/*case Lua.LUA_TFUNCTION:
-				return new LuaCallback(l, LuaL.ref(l, Lua.LUA_REGISTRYINDEX)); */
+			case Lua.LUA_TFUNCTION:
+				return new LuaCallback(cpp.Pointer.fromRaw(l), LuaL.ref(l, Lua.LUA_REGISTRYINDEX));
 			default:
 				Sys.println('Couldn\'t convert "${cast (Lua.typename(l, idx), String)}" to Haxe.');
 		}
