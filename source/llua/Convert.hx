@@ -14,9 +14,9 @@ class Convert {
 			case TNull:
 				Lua.pushnil(l);
 			case TInt:
-				Lua.pushinteger(l, val);
+				Lua.pushinteger(l, cast(val, Int));
 			case TFloat:
-				Lua.pushnumber(l, val);
+				Lua.pushnumber(l, cast(val, Float));
 			case TBool:
 				Lua.pushboolean(l, val ? 1 : 0);
 			case TClass(Array):
@@ -92,7 +92,7 @@ class Convert {
 					var v:DynamicAccess<Any> = {};
 					loopTable(l, idx, {
 						switch Lua.type(l, -2) {
-							case t if (t == Lua.LUA_TSTRING): v.set(Lua.tostring(l, -2), fromLua(l, -1));
+							case t if (t == Lua.LUA_TSTRING): v.set(cast(Lua.tostring(l, -2), String), fromLua(l, -1));
 							case t if (t == Lua.LUA_TNUMBER): v.set(Std.string(Lua.tonumber(l, -2)), fromLua(l, -1));
 						}
 					});
