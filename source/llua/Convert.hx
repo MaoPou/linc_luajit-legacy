@@ -3,10 +3,8 @@ package llua;
 #if !cpp
 #error 'LuaJIT supports only C++ target platforms.'
 #end
-import llua.Macro.*;
 import haxe.DynamicAccess;
-import haxe.ds.ObjectMap;
-import haxe.ds.StringMap;
+import llua.Macro.*;
 import llua.State;
 import llua.Lua;
 
@@ -29,7 +27,7 @@ class Convert {
 					toLua(l, val[i]);
 					Lua.settable(l, -3);
 				}
-			case TClass(ObjectMap) | TClass(StringMap):
+			case TClass(haxe.ds.ObjectMap) | TClass(haxe.ds.StringMap):
 				var map:Map<String, Dynamic> = val;
 
 				Lua.createtable(l, Lambda.count(map), 0);
