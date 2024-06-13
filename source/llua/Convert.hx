@@ -18,7 +18,7 @@ class Convert {
 			case TFloat:
 				Lua.pushnumber(l, val);
 			case TBool:
-				Lua.pushboolean(l, val);
+				Lua.pushboolean(l, val ? 1 : 0);
 			case TClass(Array):
 				Lua.createtable(l, val.length, 0);
 
@@ -57,7 +57,7 @@ class Convert {
 			case type if (type == Lua.LUA_TNIL):
 				return null;
 			case type if (type == Lua.LUA_TBOOLEAN):
-				return Lua.toboolean(l, idx);
+				return Lua.toboolean(l, idx) == 1;
 			case type if (type == Lua.LUA_TNUMBER):
 				return Lua.tonumber(l, idx);
 			case type if (type == Lua.LUA_TSTRING):
