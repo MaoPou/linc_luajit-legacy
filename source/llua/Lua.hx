@@ -59,8 +59,16 @@ extern class Lua {
 	@:native('lua_pushcclosure')
 	static function pushcclosure(L:cpp.RawPointer<Lua_State>, fn:Lua_CFunction, n:Int):Void;
 
+	@:native('lua_pushcfunction')
+	static function pushcfunction(L:cpp.RawPointer<Lua_State>, fn:Lua_CFunction):Void;
+
+	@:noCompletion
 	@:native('lua_pushboolean')
-	static function pushboolean(L:cpp.RawPointer<Lua_State>, b:Int):Void;
+	static function _pushboolean(l:State, b:Int):Void;
+
+	static inline function pushboolean(l:State, b:Bool):Void {
+		_pushboolean(l, b == true ? 1 : 0);
+	}
 
 	@:native('lua_pushlightuserdata')
 	static function pushlightuserdata(L:cpp.RawPointer<Lua_State>, p:cpp.RawPointer<cpp.Void>):Void;
@@ -84,7 +92,7 @@ extern class Lua {
 	static function getglobal(L:cpp.RawPointer<Lua_State>, s:cpp.ConstCharStar):Int;
 
 	@:native('lua_tostring')
-	static function tostring(L:cpp.RawPointer<Lua_State>, i:Int):cpp.ConstCharStar;
+	static function tostring(L:cpp.RawPointer<Lua_State>, i:Int):String;
 
 	@:native('lua_close')
 	static function close(L:cpp.RawPointer<Lua_State>):Void;
@@ -145,12 +153,36 @@ extern class Lua {
 	@:native('lua_settable')
 	static function settable(L:cpp.RawPointer<Lua_State>, idx:Int):Int;
 
+	@:native('lua_newtable')
+	static function newtable(L:cpp.RawPointer<Lua_State>):Void;
+
+	@:native('lua_getmetatable')
+	static function getmetatable(L:cpp.RawPointer<Lua_State>, objindex:Int):Int;
+
+	@:native('lua_setmetatable')
+	static function setmetatable(L:cpp.RawPointer<Lua_State>, objindex:Int):Int;
+
 	@:native('lua_rawgeti')
 	static function rawgeti(L:cpp.RawPointer<Lua_State>, idx:Int, n:Int):Int;
+
+	@:native('lua_rawget')
+	static function rawget(L:cpp.RawPointer<Lua_State>, idx:Int):Int;
+
+	@:native('lua_rawseti')
+	static function rawseti(L:cpp.RawPointer<Lua_State>, idx:Int, n:Int):Int;
 
 	static inline function init_callbacks(L:cpp.RawPointer<Lua_State>):Void {
 		hxluajit.Lua.register(L, "print", cpp.Function.fromStaticFunction(print));
 	}
+
+	@:native('lua_pushvalue')
+	static function pushvalue(L:cpp.RawPointer<Lua_State>, idx:Int):Void;
+
+	@:native('lua_getfield')
+	static function getfield(l:State, idx:Int, k:String):Void;
+
+	@:native('lua_setfield')
+	static function setfield(l:State, idx:Int, k:String):Void;
 
 	static inline function print(L:cpp.RawPointer<Lua_State>):Int {
 		final nargs:Int = hxluajit.Lua.gettop(L);

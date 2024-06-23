@@ -18,15 +18,9 @@ class Convert {
 			case TFloat:
 				Lua.pushnumber(l, cast(val, Float));
 			case TBool:
-				Lua.pushboolean(l, val ? 1 : 0);
+				hxluajit.Lua.pushboolean(l, val ? 1 : 0);
 			case TClass(Array):
-				Lua.createtable(l, val.length, 0);
-
-				for (i in 0...val.length) {
-					Lua.pushinteger(l, i + 1);
-					toLua(l, val[i]);
-					Lua.settable(l, -3);
-				}
+				arrayToLua(l, val);
 			case TClass(haxe.ds.ObjectMap) | TClass(haxe.ds.StringMap):
 				var map:Map<String, Dynamic> = val;
 
@@ -105,5 +99,17 @@ class Convert {
 		}
 
 		return null;
+	}
+	
+	public static inline function arrayToLua(l:State, arr:Array<Dynamic>)
+	{
+		Lua.createtable(l, arr.length, 0);
+
+		for (i in 0...arr.length)
+		{
+			Lua.pushinteger(l, i + 1);
+			toLua(l, arr[i]);
+			Lua.settable(l, -3);
+		}
 	}
 }
