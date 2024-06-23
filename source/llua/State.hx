@@ -6,3 +6,4 @@ package llua;
 import hxluajit.Types;
 
 typedef State = cpp.RawPointer<hxluajit.Lua_State>;
+typedef StatePointer = cpp.RawPointer<hxluajit.Lua_State>;
