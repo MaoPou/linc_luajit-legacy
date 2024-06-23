@@ -92,7 +92,7 @@ extern class Lua {
 	static function getglobal(L:cpp.RawPointer<Lua_State>, s:cpp.ConstCharStar):Int;
 
 	@:native('lua_tostring')
-	static function tostring(L:cpp.RawPointer<Lua_State>, i:Int):String;
+	static function tostring(L:cpp.RawPointer<Lua_State>, i:Int):cpp.ConstCharStar;
 
 	@:native('lua_close')
 	static function close(L:cpp.RawPointer<Lua_State>):Void;
