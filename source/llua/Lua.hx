@@ -116,8 +116,13 @@ extern class Lua {
 		return _isstring(L, idx) != 0;
 	}
 
+	@:noCompletion
 	@:native('lua_toboolean')
-	static function toboolean(L:cpp.RawPointer<Lua_State>, idx:Int):Int;
+	static function _toboolean(l:State, idx:Int) : Int;
+
+	static inline function toboolean(l:State, idx:Int) : Bool {
+		return _toboolean(l, idx) != 0;
+	}
 
 	@:noCompletion
 	@:native('lua_isnumber')

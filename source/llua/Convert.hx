@@ -18,7 +18,7 @@ class Convert {
 			case TFloat:
 				Lua.pushnumber(l, cast(val, Float));
 			case TBool:
-				hxluajit.Lua.pushboolean(l, val ? 1 : 0);
+				Lua.pushboolean(l, val);
 			case TClass(Array):
 				arrayToLua(l, val);
 			case TClass(haxe.ds.ObjectMap) | TClass(haxe.ds.StringMap):
@@ -51,7 +51,7 @@ class Convert {
 			case type if (type == Lua.LUA_TNIL):
 				return null;
 			case type if (type == Lua.LUA_TBOOLEAN):
-				return Lua.toboolean(l, idx) == 1;
+				return Lua.toboolean(l, idx);
 			case type if (type == Lua.LUA_TNUMBER):
 				return Lua.tonumber(l, idx);
 			case type if (type == Lua.LUA_TSTRING):
