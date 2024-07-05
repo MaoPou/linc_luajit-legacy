@@ -8,11 +8,10 @@ import hxluajit.Types;
 /**
  * Provides static methods to open various Lua standard libraries and extensions.
  */
-@:buildXml('<include name="${haxelib:hxluajit}/project/Build.xml" />')
+@:buildXml('<include name="${haxelib:linc_luajit}/project/Build.xml" />')
 @:include('lua.hpp')
 @:unreflective
-extern class LuaOpen
-{
+extern class LuaOpen {
 	/**
 	 * Opens the basic library (`base`) into the given Lua state.
 	 *

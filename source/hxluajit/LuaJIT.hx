@@ -8,11 +8,10 @@ import hxluajit.Types;
 /**
  * Provides access to various properties and functionalities of LuaJIT.
  */
-@:buildXml('<include name="${haxelib:hxluajit}/project/Build.xml" />')
+@:buildXml('<include name="${haxelib:linc_luajit}/project/Build.xml" />')
 @:include('lua.hpp')
 @:unreflective
-extern class LuaJIT
-{
+extern class LuaJIT {
 	/**
 	 * The version string of LuaJIT.
 	 */

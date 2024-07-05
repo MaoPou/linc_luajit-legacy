@@ -8,11 +8,10 @@ import hxluajit.Types;
 /**
  * Provides bindings to Lua's auxiliary library functions.
  */
-@:buildXml('<include name="${haxelib:hxluajit}/project/Build.xml" />')
+@:buildXml('<include name="${haxelib:linc_luajit}/project/Build.xml" />')
 @:include('lua.hpp')
 @:unreflective
-extern class LuaL
-{
+extern class LuaL {
 	/**
 	 * Opens a library.
 	 *

@@ -11,7 +11,7 @@ class Types {}
 /**
  * Lua state type, representing the entire execution context of a Lua interpreter.
  */
-@:buildXml('<include name="${haxelib:hxluajit}/project/Build.xml" />')
+@:buildXml('<include name="${haxelib:linc_luajit}/project/Build.xml" />')
 @:include('lua.hpp')
 @:native('lua_State')
 extern class Lua_State {}
@@ -39,7 +39,7 @@ typedef Lua_Alloc = cpp.Callable<(ud:cpp.RawPointer<cpp.Void>, ptr:cpp.RawPointe
 /**
  * Type for numbers in Lua.
  */
-@:buildXml('<include name="${haxelib:hxluajit}/project/Build.xml" />')
+@:buildXml('<include name="${haxelib:linc_luajit}/project/Build.xml" />')
 @:include('lua.hpp')
 @:native('lua_Number')
 @:scalar
@@ -50,7 +50,7 @@ extern abstract Lua_Number from Float to Float {}
 /**
  * Type for integers in Lua.
  */
-@:buildXml('<include name="${haxelib:hxluajit}/project/Build.xml" />')
+@:buildXml('<include name="${haxelib:linc_luajit}/project/Build.xml" />')
 @:include('lua.hpp')
 @:native('lua_Integer')
 @:scalar
@@ -61,13 +61,12 @@ extern abstract Lua_Integer from Int to Int {}
 /**
  * Lua debug information.
  */
-@:buildXml('<include name="${haxelib:hxluajit}/project/Build.xml" />')
+@:buildXml('<include name="${haxelib:linc_luajit}/project/Build.xml" />')
 @:include('lua.hpp')
 @:unreflective
 @:structAccess
 @:native('lua_Debug')
-extern class Lua_Debug
-{
+extern class Lua_Debug {
 	/**
 	 * Allocates a new Lua_Debug instance.
 	 *
@@ -140,13 +139,12 @@ typedef Lua_Hook = cpp.Callable<(L:cpp.RawPointer<Lua_State>, ar:cpp.RawPointer<
 /**
  * Buffer for building Lua strings.
  */
-@:buildXml('<include name="${haxelib:hxluajit}/project/Build.xml" />')
+@:buildXml('<include name="${haxelib:linc_luajit}/project/Build.xml" />')
 @:include('lua.hpp')
 @:unreflective
 @:structAccess
 @:native('luaL_Buffer')
-extern class LuaL_Buffer
-{
+extern class LuaL_Buffer {
 	/**
 	 * Allocates a new LuaL_Buffer instance.
 	 *
@@ -179,13 +177,12 @@ extern class LuaL_Buffer
 /**
  * Structure for Lua library functions.
  */
-@:buildXml('<include name="${haxelib:hxluajit}/project/Build.xml" />')
+@:buildXml('<include name="${haxelib:linc_luajit}/project/Build.xml" />')
 @:include('lua.hpp')
 @:unreflective
 @:structAccess
 @:native('luaL_Reg')
-extern class LuaL_Reg
-{
+extern class LuaL_Reg {
 	/**
 	 * Allocates a new LuaL_Reg instance.
 	 *
