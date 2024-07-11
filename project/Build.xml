@@ -41,7 +41,7 @@
 		</section>
 
 		<section if="iphonesim">
-			<lib name="${haxelib:linc_luajit}/project/luajit/lib/iOS/libluajit_sim.a" if="HXCPP_ARM64 || HXCPP_X86_64" />
+			<lib name="${haxelib:linc_luajit}/project/luajit/lib/iOS/libluajit_sim.a" if="HXCPP_ARM64 || HXCPP_M64" />
 		</section>
 	</target>
 </xml>
