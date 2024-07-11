@@ -173,6 +173,9 @@ extern class Lua {
 	@:native('lua_rawget')
 	static function rawget(L:cpp.RawPointer<Lua_State>, idx:Int):Int;
 
+	@:native('lua_rawset')
+	static function rawset(L:cpp.RawPointer<Lua_State>, idx:Int):Int;
+
 	@:native('lua_rawseti')
 	static function rawseti(L:cpp.RawPointer<Lua_State>, idx:Int, n:Int):Int;
 
