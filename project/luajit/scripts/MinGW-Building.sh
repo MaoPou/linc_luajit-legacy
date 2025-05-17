@@ -8,6 +8,7 @@ cd LuaJIT
 mkdir build
 
 make clean
+make CFLAGS="-DLUAJIT_ENABLE_LUA52COMPAT"
 cd src
 make -j8 BUILDMODE=static
 cd ..
