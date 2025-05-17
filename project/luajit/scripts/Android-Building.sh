@@ -13,6 +13,7 @@ NDKCROSS="$NDKBIN/aarch64-linux-android-"
 NDKCC="$NDKBIN/aarch64-linux-android21-clang"
 
 make clean
+make CFLAGS="-DLUAJIT_ENABLE_LUA52COMPAT"
 make -j8 HOST_CC="gcc -m64" CC=clang CROSS=$NDKCROSS \
      STATIC_CC=$NDKCC DYNAMIC_CC="$NDKCC -fPIC" TARGET_SYS=Linux \
      TARGET_LD=$NDKCC TARGET_LDFLAGS="-fuse-ld=lld" TARGET_AR="$NDKBIN/llvm-ar rcus" \
